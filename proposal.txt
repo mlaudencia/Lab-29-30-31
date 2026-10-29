@@ -1,0 +1,22 @@
+Project Overview:
+My project is going to create a gym simulation where the program is going
+to keep track of the status of the different levels of fighters at the gym.
+This software will demonstrate how a gym's roster and fighter experience
+levels change over a span of time.
+
+Implementation:
+I intend to use a std::map to handle the different levels of fighters across
+different gyms. This map will organize fighters into three std::lists that
+represent beginner, amateur, and pro fighters. The map will have the gym name
+as its key. The map's value will be an array of those three lists.
+
+A map entry would be for a specific gym. The three lists would represent the
+beginner, amateur, and pro fighters in that gym. The two other map entries 
+would be for two other gyms.
+
+Simulated events:
+The simulation will center on five different events: fighters moving gyms,
+fighters taking a break due to injuries or other reasons, new fighters
+joining the gym, fighters leveling up in skill, and fighters retiring. After
+a set amount of time, fighters may switch or join gyms, take a break to recover from
+injuries or other outside circumstances, develop in skill, or retire.
