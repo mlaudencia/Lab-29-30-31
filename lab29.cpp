@@ -8,8 +8,9 @@ using namespace std;
 
 const int ARRAY_SIZE = 3;
 
-void simulateFighters(map<string, array<list<string>, ARRAY_SIZE>>, int t);
+void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>, int t);
 void createGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms);
+
 
 int main(){
     map<string, array<list<string>, ARRAY_SIZE>> gymMap;
@@ -31,6 +32,15 @@ int main(){
     fin.close();
 
 
+}
+
+void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>> gyms, int t){
+    for(int i = 0; i < t; i++){
+        for(auto& pair: gyms){
+            string g = pair.first;
+            auto& levels = pair.second;
+        }
+    }
 }
 
 void createGym(map<string, array<list<string>, ARRAY_SIZE>>& gyms){
