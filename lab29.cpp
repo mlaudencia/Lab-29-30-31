@@ -71,12 +71,19 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
                     }
                 }
             }
+            addFighter(gyms, gymName, names);
+            if(rand() % 50 == 0){
+                addFighter(gyms, gymName, names);
+                if(rand() % 100 == 0){
+                    addFighter(gyms, gymName, names);
+                }
+            }
         }
     }
 }
 
 void createGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms){
-    gyms["Doron Destroyers"][2].push_back("Scary Man Sam");
+    gyms["DoronDestroyers"][2].push_back("Scary Man Sam");
 }
 
 void retireFighter(list<string>& fighters, const string& fighter, const string& gym){
@@ -92,11 +99,19 @@ void retireFighter(list<string>& fighters, const string& fighter, const string& 
 void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
     int roll = rand() % RARITY;
     int level = BEGINNER;
-    string name = names[rand() % SZ_NAMES];
+    string newFighter = names[rand() % names.size()];
     if(roll < 5){
         level = PRO;
     } else if(roll < 20){
         level = AMATEUR;
     }
-    gyms[gym][level].push_back(name);
+    gyms[gym][level].push_back(newFighter);
+    cout << newFighter << " has joined the " << gym << " gym as an";
+    if(level == PRO){
+        cout << " pro fighter.\n";
+    } else if(level == AMATEUR){
+        cout << " amateur fighter.\n";
+    } else{
+        cout << " beginner fighter.\n";
+    }
 }
