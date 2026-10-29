@@ -139,13 +139,13 @@ void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string
         level = AMATEUR;
     }
     gyms[gym][level].push_back(newFighter);
-    cout << newFighter << " has joined the " << gym << " gym as an";
+    cout << newFighter << " has joined the " << gym << " gym as";
     if(level == PRO){
-        cout << " pro fighter.\n";
+        cout << "a pro fighter.\n";
     } else if(level == AMATEUR){
-        cout << " amateur fighter.\n";
+        cout << "an amateur fighter.\n";
     } else{
-        cout << " beginner fighter.\n";
+        cout << "a beginner fighter.\n";
     }
 }
 
@@ -159,13 +159,13 @@ void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
         const auto& experience = pair.second;
         string fighterLevels[ARRAY_SIZE] = {"Beginner", "Amateur", "Pro"};
         for(int i = 0; i < ARRAY_SIZE; i++){
-            cout << fighterLevels[i] << "\n";
+            cout << "  " << fighterLevels[i] << "\n";
             if(experience[i].empty()){
-                cout << "No fighters of this level.\n";
+                cout << "    No fighters of this level.\n";
             }
             else{
                 for(const auto& fighter: experience[i]){
-                    cout << fighter << "\n";
+                    cout << "    " << fighter << "\n";
                 }
             }
         }

@@ -7,6 +7,8 @@ Shadow
 Poppy
 Chaka
 Ryo
+Ryoko
+Ryuko
 Ryuji
 Ryuma
 Dax
@@ -48,7 +50,7 @@ Saber
 Blade
 Kiba
 Kakashi
-Sasuke
+Killer
 Levi
 Bakugo
 Todoroki
@@ -79,7 +81,7 @@ Demyx
 Marluxia
 Larxene
 Xigbar
-Saïx
+Hiro
 Vexen
 Lexaeus
 Zael
