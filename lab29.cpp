@@ -5,13 +5,21 @@
 #include <string>
 #include <fstream>
 #include <algorithm>
+#include <vector>
 using namespace std;
 
 const int ARRAY_SIZE = 3;
+const int numIntervals = 20;
+const int SZ_NAMES = 200;
+const int RARITY = 100;
+const int BEGINNER = 0;
+const int AMATEUR = 1;
+const int PRO = 2;
 
-void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>, int t);
+void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
 void createGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms);
-void retireFighter(list<string> fighters, const string& fighter, const string& gym);
+void retireFighter(list<string>& fighters, const string& fighter, const string& gym);
+void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
 
 
 int main(){
@@ -19,7 +27,7 @@ int main(){
 
     createGyms(gymMap);
 
-    ifstream fin("gym_info.txt");
+    ifstream fin("fighters_info.txt");
     if(!fin){
         cout << "Could not open external file, check if name is correct " <<
         " then restart the program." << endl;
@@ -33,10 +41,24 @@ int main(){
     }
     fin.close();
 
+    ifstream fin1("names.txt");
+    if(!fin1){
+        cout << "Could not open external file, check if name is correct " <<
+        " then restart the program." << endl;
+        return 1;
+    }
+    vector<string> names;
+    string tempName;
+    int i = 0;
+    while (fin1 >> tempName){
+        names.push_back(tempName);
+    }
+    fin1.close();
 
+    simulateGyms(gymMap, names, numIntervals);
 }
 
-void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>> gyms, int t){
+void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t){
     for(int i = 0; i < t; i++){
         for(auto& pair: gyms){
             string gymName = pair.first;
@@ -44,7 +66,7 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>> gyms, int t){
             for(int l = 0; l < ARRAY_SIZE; l++){
                 auto& fighters = experience[l];
                 for(string fighter: fighters){
-                    if(rand() % 1 == 0){
+                    if(rand() % 20 == 0){
                         retireFighter(fighters, fighter, gymName);
                     }
                 }
@@ -53,11 +75,11 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>> gyms, int t){
     }
 }
 
-void createGym(map<string, array<list<string>, ARRAY_SIZE>>& gyms){
+void createGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms){
     gyms["Doron Destroyers"][2].push_back("Scary Man Sam");
 }
 
-void retireFighter(list<string> fighters, const string& fighter, const string& gym){
+void retireFighter(list<string>& fighters, const string& fighter, const string& gym){
     auto it = find(fighters.begin(), fighters.end(), fighter);
     if(it != fighters.end()){
         cout << fighter << " has retired from the " << gym << " gym.\n";
@@ -65,5 +87,16 @@ void retireFighter(list<string> fighters, const string& fighter, const string& g
     } else{
         cout << fighter << " was not found at the " << gym << " gym.\n";
     }
+}
 
+void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
+    int roll = rand() % RARITY;
+    int level = BEGINNER;
+    string name = names[rand() % SZ_NAMES];
+    if(roll < 5){
+        level = PRO;
+    } else if(roll < 20){
+        level = AMATEUR;
+    }
+    gyms[gym][level].push_back(name);
 }
