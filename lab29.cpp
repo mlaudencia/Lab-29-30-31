@@ -17,15 +17,13 @@ const int AMATEUR = 1;
 const int PRO = 2;
 
 void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
-void createGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms);
 void retireFighter(list<string>& fighters, const string& fighter, const string& gym);
 void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
+void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms);
 
 
 int main(){
     map<string, array<list<string>, ARRAY_SIZE>> gymMap;
-
-    createGyms(gymMap);
 
     ifstream fin("fighters_info.txt");
     if(!fin){
@@ -60,6 +58,8 @@ int main(){
 
 void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t){
     for(int i = 0; i < t; i++){
+        cout << "======= TIME INTERVAL " << i+1 << " =======\n";
+        displayGyms(gyms);
         for(auto& pair: gyms){
             string gymName = pair.first;
             auto& experience = pair.second;
@@ -71,19 +71,17 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
                     }
                 }
             }
-            addFighter(gyms, gymName, names);
-            if(rand() % 50 == 0){
+            if(rand() % 3 == 0){
                 addFighter(gyms, gymName, names);
-                if(rand() % 100 == 0){
+                if(rand() % 50 == 0){
                     addFighter(gyms, gymName, names);
+                    if(rand() % 100 == 0){
+                        addFighter(gyms, gymName, names);
+                    }
                 }
             }
         }
     }
-}
-
-void createGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms){
-    gyms["DoronDestroyers"][2].push_back("Scary Man Sam");
 }
 
 void retireFighter(list<string>& fighters, const string& fighter, const string& gym){
@@ -113,5 +111,26 @@ void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string
         cout << " amateur fighter.\n";
     } else{
         cout << " beginner fighter.\n";
+    }
+}
+
+void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
+    cout << "===== CURRENT GYM ROSTERS =====\n";
+    for(const auto& pair: gyms){
+        cout << pair.first << "\n";
+        const auto& experience = pair.second;
+        string fighterLevels[ARRAY_SIZE] = {"Beginner", "Amateur", "Pro"};
+        for(int i = 0; i < ARRAY_SIZE; i++){
+            cout << fighterLevels[i] << "\n";
+            if(experience[i].empty()){
+                cout << "No fighters of this level.\n";
+            }
+            else{
+                for(const auto& fighter: experience[i]){
+                    cout << fighter << "\n";
+                }
+            }
+        }
+        cout << "\n";
     }
 }

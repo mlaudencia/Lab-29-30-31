@@ -2,7 +2,7 @@ Project Overview:
 My project is going to create a gym simulation where the program is going
 to keep track of the status of the different levels of fighters at the gym.
 This software will demonstrate how a gym's roster and fighter experience
-levels change over a span of time.
+levels change over a decade.
 
 Implementation:
 I intend to use a std::map to handle the different levels of fighters across
