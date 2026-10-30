@@ -146,12 +146,14 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
 // I am thinking of adding a retired fighters list just so that with a random
 // chance, a retired fighter can come out of retirement.
 void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym){
-    auto it = find(fighters.begin(), fighters.end(), fighter);
+    auto it = find_if(fighters.begin(), fighters.end(), [&f](const Fighter& fighter){
+        return fighter.name == f.name;
+    });
     if(it != fighters.end()){
-        cout << fighter << " has retired from the " << gym << " gym.\n";
+        cout << f.name << " has retired from the " << gym << " gym.\n";
         fighters.erase(it);
     } else{
-        cout << fighter << " was not found at the " << gym << " gym.\n";
+        cout << f.name << " was not found at the " << gym << " gym.\n";
     }
 }
 
@@ -253,17 +255,21 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
 
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym){
     int roll = rand() % RARITY;
+    bool yes = false;
     if(gym == "DoronDestroyers"){
         if(roll < 12){
-            
+            yes == true;
         }
     } else if(gym == "PotProtectors"){
         if(roll < 4){
-
+            yes == true;
         }
     } else{
         if(roll < 9){
-
+            yes == true;
         }
+    }
+    if(yes){
+        
     }
 }
