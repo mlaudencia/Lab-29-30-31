@@ -166,15 +166,32 @@ void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym)
 // be a beginner with an 80% chance, then amateur 20% chance, and then pro 5%.
 void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
     int roll = rand() % RARITY;
+    int genius = rand() % RARITY;
+    int wins = 0, losses = 0, draws = 0;
+    bool isGenius = false;
     int level = BEGINNER;
-    string newFighter = names[rand() % names.size()];
+    string name = names[rand() % names.size()];
     if(roll < 5){
         level = PRO;
     } else if(roll < 20){
         level = AMATEUR;
     }
+    if(genius == 0){
+        isGenius = true;
+    }
+    if(level == AMATEUR){
+        wins = rand() % 10;
+        losses = rand() % 10;
+        draws = rand() % 4;
+    }
+    else if(level == PRO){
+        wins = rand() % 25;
+        losses = rand() % 25;
+        draws = rand() % 10;
+    }
+    Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
     gyms[gym][level].push_back(newFighter);
-    cout << newFighter << " has joined the " << gym << " gym as ";
+    cout << newFighter.name << " has joined the " << gym << " gym as ";
     if(level == PRO){
         cout << "a pro fighter.\n";
     } else if(level == AMATEUR){
