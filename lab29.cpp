@@ -22,12 +22,12 @@ const int BEGINNER = 0;
 const int AMATEUR = 1;
 const int PRO = 2;
 
-void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
-void retireFighter(list<string>& fighters, const string& fighter, const string& gym);
-void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
-void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms);
-void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym, int l);
-void injureFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym);
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
+void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym);
+void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
+void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
+void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
 
 struct Fighter{
     string name;
@@ -35,11 +35,12 @@ struct Fighter{
     int win;
     int loss;
     int draw;
+    bool isInjured;
 };
 
 
 int main(){
-    map<string, array<list<string>, ARRAY_SIZE>> gymMap;
+    map<string, array<list<Fighter>, ARRAY_SIZE>> gymMap;
 
     ifstream fin("fighters_info.txt");
     if(!fin){
@@ -48,10 +49,12 @@ int main(){
         return 1;
     }
     string gymName;
-    int level;
+    int level, wins, losses, draws;
     string fighterName;
-    while (fin >> gymName >> level >> fighterName){
-        gymMap[gymName][level].push_back(fighterName);
+    bool isInjured;
+    while (fin >> gymName >> level >> fighterName >> wins >> losses >> draws >> isInjured){
+        Fighter newFighter{fighterName, level, wins, losses, draws, isInjured};
+        gymMap[gymName][level].push_back(newFighter);
     }
     fin.close();
 
@@ -224,8 +227,12 @@ void injureFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, 
             
         }
     } else if(gym == "PotProtectors"){
+        if(roll < 4){
 
+        }
     } else{
+        if(roll < 9){
 
+        }
     }
 }
