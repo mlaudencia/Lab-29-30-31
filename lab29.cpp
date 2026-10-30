@@ -36,6 +36,7 @@ struct Fighter{
     int loss;
     int draw;
     bool isInjured;
+    bool isGenius;
 };
 
 
@@ -51,9 +52,9 @@ int main(){
     string gymName;
     int level, wins, losses, draws;
     string fighterName;
-    bool isInjured;
-    while (fin >> gymName >> level >> fighterName >> wins >> losses >> draws >> isInjured){
-        Fighter newFighter{fighterName, level, wins, losses, draws, isInjured};
+    bool isInjured, isGenius;
+    while (fin >> gymName >> level >> fighterName >> wins >> losses >> draws >> isInjured >> isGenius){
+        Fighter newFighter{fighterName, level, wins, losses, draws, isInjured, isGenius};
         gymMap[gymName][level].push_back(newFighter);
     }
     fin.close();
@@ -199,7 +200,11 @@ void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms){
             }
             else{
                 for(const auto& fighter: experience[i]){
-                    cout << "    " << fighter.name << " " << fighter.win << "-";
+                    cout << "    ";
+                    if(fighter.isGenius == true){
+                        cout << " ✧ ";
+                    }
+                    cout << fighter.name << " " << fighter.win << "-";
                     cout << fighter.loss << "-" << fighter.draw << " ";
                     if(fighter.isInjured == true){
                         cout << "(injured)";
@@ -214,9 +219,13 @@ void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms){
 
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, int l){
     if(l < ARRAY_SIZE - 1){
-        exp[l].remove(fighter);
-        exp[l + 1].push_back(fighter);
-        cout << fighter << ", from the " << gym << " gym, has been promoted to a ";
+        exp[l].remove_if([&f](const Fighter& fighter){
+            return fighter.name == f.name;
+        });
+        Fighter pf = f;
+        pf.level += 1;
+        exp[l + 1].push_back(pf);
+        cout << f.name << ", from the " << gym << " gym, has been promoted to a ";
         if(l == 0){
             cout << "amateur fighter! Congrats!\n";
         } else{
