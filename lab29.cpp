@@ -27,6 +27,14 @@ void retireFighter(list<string>& fighters, const string& fighter, const string& 
 void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
 void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms);
 
+struct Fighter{
+    string name;
+    int level;
+    int win;
+    int loss;
+    int draw;
+};
+
 
 int main(){
     map<string, array<list<string>, ARRAY_SIZE>> gymMap;
