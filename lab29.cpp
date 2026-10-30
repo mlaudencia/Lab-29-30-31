@@ -83,7 +83,7 @@ int main(){
 // video game RNG, so I enjoyed it. Right now, I only have retireFighter() and
 // addFighter(), but there will come more events like levelUpFighter(), 
 // fighterBreak() for injuries, and then fighterSwitchGym().
-void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t){
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t){
     for(int i = 0; i < t; i++){
         cout << "======= TIME INTERVAL " << i+1 << " =======\n";
         displayGyms(gyms);
@@ -144,7 +144,7 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
 
 // I am thinking of adding a retired fighters list just so that with a random
 // chance, a retired fighter can come out of retirement.
-void retireFighter(list<string>& fighters, const string& fighter, const string& gym){
+void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym){
     auto it = find(fighters.begin(), fighters.end(), fighter);
     if(it != fighters.end()){
         cout << fighter << " has retired from the " << gym << " gym.\n";
@@ -163,7 +163,7 @@ void retireFighter(list<string>& fighters, const string& fighter, const string& 
 // that isn't very realistic, so I changed it so it was random what level the
 // new fighter was. As seen below, a majority of the time, the new fighter will
 // be a beginner with an 80% chance, then amateur 20% chance, and then pro 5%.
-void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
+void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
     int roll = rand() % RARITY;
     int level = BEGINNER;
     string newFighter = names[rand() % names.size()];
@@ -186,7 +186,7 @@ void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string
 // displayGyms() shows the current rosters and level of fighters of the gyms.
 // arguments: const map<string, array<list<string>, ARRAY_SIZE>>& gyms
 // returns: nothing
-void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
+void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms){
     cout << "===== CURRENT GYM ROSTERS =====\n";
     for(const auto& pair: gyms){
         cout << pair.first << "\n";
@@ -199,7 +199,12 @@ void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
             }
             else{
                 for(const auto& fighter: experience[i]){
-                    cout << "    " << fighter << "\n";
+                    cout << "    " << fighter.name << " " << fighter.win << "-";
+                    cout << fighter.loss << "-" << fighter.draw << " ";
+                    if(fighter.isInjured == true){
+                        cout << "(injured)";
+                    }
+                    cout << "\n";
                 }
             }
         }
@@ -207,7 +212,7 @@ void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
     }
 }
 
-void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym, int l){
+void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, int l){
     if(l < ARRAY_SIZE - 1){
         exp[l].remove(fighter);
         exp[l + 1].push_back(fighter);
@@ -220,7 +225,7 @@ void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter,
     }
 }
 
-void injureFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym){
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym){
     int roll = rand() % RARITY;
     if(gym == "DoronDestroyers"){
         if(roll < 12){
