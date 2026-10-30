@@ -41,6 +41,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
 void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
+void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l);
 void simulateMatch(Fighter& f, const string& gym);
 
 int main(){
@@ -129,6 +130,9 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                 }
                 for(const Fighter& fighter: retire){
                     retireFighter(fighters, fighter, gymName);
+                }
+                for(const Fighter& fighter: injure){
+                    injureFighter(experience, fighter, gymName);
                 }
             }
             if(rand() % 3 == 0){ // This is a 1/3 chance for a fighter to
@@ -261,11 +265,11 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
         if(f.isGenius){
             cout << " * ";
         }
-        cout << f.name << ", from the " << gym << " gym, has been promoted to a ";
+        cout << f.name << ", from the " << gym << " gym, has been promoted to a";
         if(l == 0){
-            cout << "amateur fighter! Congrats!\n";
+            cout << "n amateur fighter! Congrats!\n";
         } else{
-            cout << "pro fighter! Congrats!\n";
+            cout << " pro fighter! Congrats!\n";
         }
     }
 }
@@ -274,15 +278,15 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
     int roll = rand() % RARITY;
     bool yes = false;
     if(gym == "DoronDestroyers"){
-        if(roll < 12){
+        if(roll < 30){
             yes = true;
         }
     } else if(gym == "PotProtectors"){
-        if(roll < 4){
+        if(roll < 10){
             yes = true;
         }
     } else{
-        if(roll < 9){
+        if(roll < 15){
             yes = true;
         }
     }
@@ -304,7 +308,7 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
 }
 
 void simulateMatch(Fighter& f, const string& gym){
-    int roll = rand() % 100;
+    int roll = rand() % RARITY;
     if(f.isGenius){
         if(roll - 20 < 0){
             roll = 0;
@@ -315,29 +319,47 @@ void simulateMatch(Fighter& f, const string& gym){
     }
 
     if(gym == "DoronDestroyers"){
-        if(roll < 70)
+        if(roll < 60)
             f.win++;
-        else if(roll < 80)
+        else if(roll < 70)
             f.draw++;
         else
             f.loss++;
     }
     
     else if(gym == "PotProtectors"){
-        if(roll < 60)
+        if(roll < 45)
             f.win++;
-        else if(roll < 75)
+        else if(roll < 65)
             f.draw++;
         else
             f.loss++;
     }
 
     else{
-        if(roll < 55)
+        if(roll < 40)
             f.win++;
         else if(roll < 70)
             f.draw++;
         else
             f.loss++;
+    }
+}
+
+void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l){
+    if(rand() % 5 == 0){
+        for(int i = 0; i < ARRAY_SIZE; i++){
+            auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
+                return fighter.name == f.name;
+            });
+
+            if(it != exp[i].end()){
+                it->isInjured = false;
+                if(f.isGenius){
+                    cout << " * ";
+                }
+                cout << it->name << " has recovered from injury at " << gym << " gym!\n";
+            }
+        }
     }
 }

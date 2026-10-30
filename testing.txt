@@ -14,3 +14,4 @@
 6. I want to add a injury list external file so that a fighter's injury can be
    listed. Alongside that, I want fighters to be away for a certain time
    interval depending on the injury they have.
+7. Error to keep mind of: fighters promoting twice in the same time interval.
