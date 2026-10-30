@@ -139,7 +139,7 @@ void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string
         level = AMATEUR;
     }
     gyms[gym][level].push_back(newFighter);
-    cout << newFighter << " has joined the " << gym << " gym as";
+    cout << newFighter << " has joined the " << gym << " gym as ";
     if(level == PRO){
         cout << "a pro fighter.\n";
     } else if(level == AMATEUR){
