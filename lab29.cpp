@@ -270,6 +270,15 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
         }
     }
     if(yes){
-        
+        for(int i = 0; i < ARRAY_SIZE; i++){
+            auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
+                return fighter.name == f.name;
+            });
+
+            if(it != exp[i].end()){
+                it->isInjured = true;
+                cout << it->name << " has been injured at " << gym << " gym!\n";
+            }
+        }
     }
 }
