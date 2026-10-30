@@ -40,6 +40,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
 void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
+void simulateMatch(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
 
 int main(){
 
@@ -118,7 +119,6 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     if(rand() % 20 == 0){
                         injure.push_back(fighter);
                     }
-
                 }
                 for(const Fighter& fighter: promote){
                     promoteFighter(experience, fighter, gymName, l);
@@ -153,6 +153,9 @@ void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym)
     auto it = find_if(fighters.begin(), fighters.end(), [&f](const Fighter& fighter){
         return fighter.name == f.name;
     });
+    if(f.isGenius){
+            cout << " * ";
+        }
     if(it != fighters.end()){
         cout << f.name << " has retired from the " << gym << " gym.\n";
         fighters.erase(it);
@@ -197,7 +200,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
     }
     Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
     gyms[gym][level].push_back(newFighter);
-    if(gyms[gym][level].isGenius){
+    if(newFighter.isGenius){
             cout << " * ";
         }
     cout << newFighter.name << " has joined the " << gym << " gym as ";
@@ -293,5 +296,35 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
                 cout << it->name << " has been injured at " << gym << " gym!\n";
             }
         }
+    }
+}
+
+void simulateMatch(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym){
+    int roll = rand() % 100;
+    if(f.isGenius){
+        if(roll + 20 > 100){
+            roll = 100;
+        }
+        else{
+            roll += 20;
+        }
+    }
+
+    if(gym == "DoronDestroyers"){
+        if(roll < 70)
+            f.win++;
+        else if(roll < 80)
+            f.draw++;
+        else
+            f.loss++;
+    }
+
+    if(gym == "PotProtectors"){
+        if(roll < 60)
+            f.win++;
+        else if(roll < 70)
+            f.draw++;
+        else
+            f.loss++;
     }
 }
