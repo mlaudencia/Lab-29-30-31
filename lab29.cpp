@@ -87,6 +87,7 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
             string gymName = pair.first;
             auto& experience = pair.second; // This is the levels of fighters
                                             // in each gym
+            cout << "\n";
             for(int l = 0; l < ARRAY_SIZE; l++){
                 auto& fighters = experience[l]; // This is the fighters of
                                                 // that specific level
@@ -95,14 +96,20 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
                 for(string fighter: fighters){
                     if(rand() % 20 == 0){
                         // Here's a 1/20 chance for a fighter to retire.
-                        retireFighter(fighters, fighter, gymName);
+                        retire.push_back(fighter);
                     }
-                    if(l < ARRAY_SIZE - 1 && rand() % 3 == 0){
-                        promoteFighter(experience, fighter, gymName, l);
+                    else if(l == 0 && rand() % 25 == 0){
+                        promote.push_back(fighter);
+                    }
+                    else if(l == 1 && rand() % 50 == 0){
+                        promote.push_back(fighter);
                     }
                 }
                 for(string fighter: promote){
                     promoteFighter(experience, fighter, gymName, l);
+                }
+                for(string fighter: retire){
+                    retireFighter(fighters, fighter, gymName);
                 }
             }
             if(rand() % 3 == 0){ // This is a 1/3 chance for a fighter to
