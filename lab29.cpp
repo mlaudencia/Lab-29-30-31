@@ -23,6 +23,7 @@ const int RARITY = 100;
 const int BEGINNER = 0;
 const int AMATEUR = 1;
 const int PRO = 2;
+const int maxMatches = 6;
 
 struct Fighter{
     string name;
@@ -40,7 +41,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
 void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
-void simulateMatch(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
+void simulateMatch(Fighter& f, const string& gym);
 
 int main(){
 
@@ -104,7 +105,10 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                 vector<Fighter> promote;
                 vector<Fighter> retire;
                 vector<Fighter> injure;
-                for(const Fighter& fighter: fighters){
+                for(Fighter& fighter: fighters){
+                    for(int i = 0; i < (rand() % maxMatches); i++){
+                        simulateMatch(fighter, gymName);
+                    }
                     if(rand() % 20 == 0){
                         // Here's a 1/20 chance for a fighter to retire.
                         retire.push_back(fighter);
@@ -271,15 +275,15 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
     bool yes = false;
     if(gym == "DoronDestroyers"){
         if(roll < 12){
-            yes == true;
+            yes = true;
         }
     } else if(gym == "PotProtectors"){
         if(roll < 4){
-            yes == true;
+            yes = true;
         }
     } else{
         if(roll < 9){
-            yes == true;
+            yes = true;
         }
     }
     if(yes){
@@ -299,14 +303,14 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
     }
 }
 
-void simulateMatch(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym){
+void simulateMatch(Fighter& f, const string& gym){
     int roll = rand() % 100;
     if(f.isGenius){
-        if(roll + 20 > 100){
-            roll = 100;
+        if(roll - 20 < 0){
+            roll = 0;
         }
         else{
-            roll += 20;
+            roll -= 20;
         }
     }
 
@@ -318,9 +322,18 @@ void simulateMatch(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const stri
         else
             f.loss++;
     }
-
-    if(gym == "PotProtectors"){
+    
+    else if(gym == "PotProtectors"){
         if(roll < 60)
+            f.win++;
+        else if(roll < 75)
+            f.draw++;
+        else
+            f.loss++;
+    }
+
+    else{
+        if(roll < 55)
             f.win++;
         else if(roll < 70)
             f.draw++;
