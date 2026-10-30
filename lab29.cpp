@@ -180,3 +180,5 @@ void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
         cout << "\n";
     }
 }
+
+void promoteFighter()
