@@ -107,7 +107,15 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                 vector<Fighter> retire;
                 vector<Fighter> injure;
                 for(Fighter& fighter: fighters){
-                    for(int i = 0; i < (rand() % maxMatches); i++){
+                    if(fighter.isInjured){
+                        if(rand() % 10 == 0){
+                            retire.push_back(fighter);
+                        } else{
+                        recoverFighter(experience, fighter, gymName, l);
+                        continue;
+                        }
+                    }
+                    for(int i = 0; i < (rand() % maxMatches + 1); i++){
                         simulateMatch(fighter, gymName);
                     }
                     if(rand() % 20 == 0){
@@ -120,8 +128,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     else if(l == 1 && rand() % 50 == 0){
                         promote.push_back(fighter);
                     }
-
-                    if(rand() % 20 == 0){
+                    else if(rand() % 15 == 0){
                         injure.push_back(fighter);
                     }
                 }
@@ -165,10 +172,16 @@ void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym)
             cout << " * ";
         }
     if(it != fighters.end()){
-        cout << f.name << " has retired from the " << gym << " gym.\n";
+        cout << f.name << " has retired from the " << gym << " gym";
+        if(f.isInjured){
+            cout << " due to injury.\n";
+        }
+        else{
+            cout << ".\n";
+        }
         fighters.erase(it);
     } else{
-        cout << f.name << " was not found at the " << gym << " gym.\n";
+        cout << f.name << " was not found at the " << gym << " gym.";
     }
 }
 
