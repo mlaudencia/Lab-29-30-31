@@ -27,6 +27,7 @@ void retireFighter(list<string>& fighters, const string& fighter, const string& 
 void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
 void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms);
 void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym, int l);
+void injureFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym);
 
 struct Fighter{
     string name;
@@ -93,6 +94,7 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
                                                 // that specific level
                 vector<string> promote;
                 vector<string> retire;
+                vector<string> injure;
                 for(string fighter: fighters){
                     if(rand() % 20 == 0){
                         // Here's a 1/20 chance for a fighter to retire.
@@ -104,6 +106,11 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
                     else if(l == 1 && rand() % 50 == 0){
                         promote.push_back(fighter);
                     }
+
+                    if(rand() % 20 == 0){
+                        injure.push_back(fighter);
+                    }
+
                 }
                 for(string fighter: promote){
                     promoteFighter(experience, fighter, gymName, l);
@@ -207,5 +214,18 @@ void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter,
         } else{
             cout << "pro fighter! Congrats!\n";
         }
+    }
+}
+
+void injureFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym){
+    int roll = rand() % RARITY;
+    if(gym == "DoronDestroyers"){
+        if(roll < 12){
+            
+        }
+    } else if(gym == "PotProtectors"){
+
+    } else{
+
     }
 }
