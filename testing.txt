@@ -16,3 +16,4 @@
    interval depending on the injury they have.
 7. Error to keep mind of: fighters promoting twice in the same time interval.
 8. Need to comment and get rid of magic numbers before submitting. 
+9. Add a function for fighters to switch gyms.
