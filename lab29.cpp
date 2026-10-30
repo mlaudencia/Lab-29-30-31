@@ -12,6 +12,8 @@
 #include <fstream>
 #include <algorithm>
 #include <vector>
+#include <cstdlib>
+#include <ctime>
 using namespace std;
 
 const int ARRAY_SIZE = 3;
@@ -21,13 +23,6 @@ const int RARITY = 100;
 const int BEGINNER = 0;
 const int AMATEUR = 1;
 const int PRO = 2;
-
-void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
-void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym);
-void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
-void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
-void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
-void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
 
 struct Fighter{
     string name;
@@ -39,8 +34,17 @@ struct Fighter{
     bool isGenius;
 };
 
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
+void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym);
+void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
+void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
+void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
 
 int main(){
+
+    srand(time(0));
+
     map<string, array<list<Fighter>, ARRAY_SIZE>> gymMap;
 
     ifstream fin("fighters_info.txt");
@@ -168,7 +172,7 @@ void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym)
 // be a beginner with an 80% chance, then amateur 20% chance, and then pro 5%.
 void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
     int roll = rand() % RARITY;
-    int genius = rand() % RARITY;
+    int genius = rand() % 10;
     int wins = 0, losses = 0, draws = 0;
     bool isGenius = false;
     int level = BEGINNER;
@@ -193,6 +197,9 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
     }
     Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
     gyms[gym][level].push_back(newFighter);
+    if(gyms[gym][level].isGenius){
+            cout << " * ";
+        }
     cout << newFighter.name << " has joined the " << gym << " gym as ";
     if(level == PRO){
         cout << "a pro fighter.\n";
@@ -221,7 +228,7 @@ void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms){
                 for(const auto& fighter: experience[i]){
                     cout << "    ";
                     if(fighter.isGenius == true){
-                        cout << " ✧ ";
+                        cout << " * ";
                     }
                     cout << fighter.name << " " << fighter.win << "-";
                     cout << fighter.loss << "-" << fighter.draw << " ";
@@ -244,6 +251,9 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
         Fighter pf = f;
         pf.level += 1;
         exp[l + 1].push_back(pf);
+        if(f.isGenius){
+            cout << " * ";
+        }
         cout << f.name << ", from the " << gym << " gym, has been promoted to a ";
         if(l == 0){
             cout << "amateur fighter! Congrats!\n";
@@ -277,6 +287,9 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
 
             if(it != exp[i].end()){
                 it->isInjured = true;
+                if(f.isGenius){
+                    cout << " * ";
+                }
                 cout << it->name << " has been injured at " << gym << " gym!\n";
             }
         }

@@ -7,3 +7,10 @@
 3. Thinking about it again, I feel like I am getting ahead of myself. I am just
    going to start off with trying to get my other events working like a fighter
    injury, or moving gyms, or increasing in skill level.
+4. I want to make injury chances dependent on the gym that a fighter goes to.
+5. I feel like the injureFighter() function needs to have some sort of way to
+   mark a fighter as injured, since a fighter will not be able to promote if
+   they are injured. I think this will come with I make fighters with structs.
+6. I want to add a injury list external file so that a fighter's injury can be
+   listed. Alongside that, I want fighters to be away for a certain time
+   interval depending on the injury they have.
