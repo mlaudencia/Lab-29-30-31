@@ -26,6 +26,7 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
 void retireFighter(list<string>& fighters, const string& fighter, const string& gym);
 void addFighter(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
 void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms);
+void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym, int l);
 
 struct Fighter{
     string name;
@@ -89,11 +90,19 @@ void simulateGyms(map<string, array<list<string>, ARRAY_SIZE>>& gyms, const vect
             for(int l = 0; l < ARRAY_SIZE; l++){
                 auto& fighters = experience[l]; // This is the fighters of
                                                 // that specific level
+                vector<string> promote;
+                vector<string> retire;
                 for(string fighter: fighters){
                     if(rand() % 20 == 0){
                         // Here's a 1/20 chance for a fighter to retire.
                         retireFighter(fighters, fighter, gymName);
                     }
+                    if(l < ARRAY_SIZE - 1 && rand() % 3 == 0){
+                        promoteFighter(experience, fighter, gymName, l);
+                    }
+                }
+                for(string fighter: promote){
+                    promoteFighter(experience, fighter, gymName, l);
                 }
             }
             if(rand() % 3 == 0){ // This is a 1/3 chance for a fighter to
@@ -181,4 +190,15 @@ void displayGyms(const map<string, array<list<string>, ARRAY_SIZE>>& gyms){
     }
 }
 
-void promoteFighter()
+void promoteFighter(array<list<string>, ARRAY_SIZE>& exp, const string& fighter, const string& gym, int l){
+    if(l < ARRAY_SIZE - 1){
+        exp[l].remove(fighter);
+        exp[l + 1].push_back(fighter);
+        cout << fighter << ", from the " << gym << " gym, has been promoted to a ";
+        if(l == 0){
+            cout << "amateur fighter! Congrats!\n";
+        } else{
+            cout << "pro fighter! Congrats!\n";
+        }
+    }
+}

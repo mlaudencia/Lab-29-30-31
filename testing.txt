@@ -1,0 +1,9 @@
+1. Right now, I wanna make it so that fighters have a win-loss-draw record, so
+   I am going to change the list<string> into list<struct>, then make a new
+   struct for Fighters.
+2. I haven't done it yet since I am still thinking, but I wanna make each gym
+   have their own specialty and introduce things like Fighter genius/prodigy
+   chances.
+3. Thinking about it again, I feel like I am getting ahead of myself. I am just
+   going to start off with trying to get my other events working like a fighter
+   injury, or moving gyms, or increasing in skill level.
