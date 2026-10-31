@@ -24,6 +24,14 @@ const int BEGINNER = 0;
 const int AMATEUR = 1;
 const int PRO = 2;
 const int maxMatches = 6;
+const int injRetChance = 12;
+const int retChance = 20;
+const int beginPromoteChance = 25;
+const int amatPromoteChance = 50;
+const int injChance = 15;
+const int joinChance = 3;
+const int joinSecChance = 50;
+const int joinThirdChance = 100;
 
 struct Fighter{
     string name;
@@ -108,7 +116,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                 vector<Fighter> injure;
                 for(Fighter& fighter: fighters){
                     if(fighter.isInjured){
-                        if(rand() % 10 == 0){
+                        if(rand() % injRetChance == 0){
                             retire.push_back(fighter);
                         } else{
                         recoverFighter(experience, fighter, gymName, l);
@@ -118,17 +126,20 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     for(int i = 0; i < (rand() % maxMatches + 1); i++){
                         simulateMatch(fighter, gymName);
                     }
-                    if(rand() % 20 == 0){
+                    if(rand() % retChance == 0){
                         // Here's a 1/20 chance for a fighter to retire.
                         retire.push_back(fighter);
                     }
-                    else if(l == 0 && rand() % 25 == 0){
+                    else if(l == 0 && rand() % beginPromoteChance == 0){
+                        // Here's a 1/25 chance to promote from beginner to
+                        // amateur
                         promote.push_back(fighter);
                     }
-                    else if(l == 1 && rand() % 50 == 0){
+                    else if(l == 1 && rand() % amatPromoteChance == 0){
+                        // Here's a 1/50 chance to promot from amateur to pro
                         promote.push_back(fighter);
                     }
-                    else if(rand() % 15 == 0){
+                    else if(rand() % injChance == 0){
                         injure.push_back(fighter);
                     }
                 }
@@ -142,14 +153,18 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     injureFighter(experience, fighter, gymName);
                 }
             }
-            if(rand() % 3 == 0){ // This is a 1/3 chance for a fighter to
+            if(rand() % joinChance == 0){ // This is a 1/3 chance for a fighter to
                                  // join a gym, and then a 1/50 and 1/100
                                  // chance for additional fighters to join
                                  // in the same time interval.
                 addFighter(gyms, gymName, names);
-                if(rand() % 50 == 0){
+                if(rand() % joinSecChance == 0){
+                    // This is 1/50 chance for a second fighter to join the
+                    // gym in the same time interval
                     addFighter(gyms, gymName, names);
-                    if(rand() % 100 == 0){
+                    if(rand() % joinThirdChance == 0){
+                        // This is a 1/100 chance for a third fighter to join
+                        // the gym in the same time interval
                         addFighter(gyms, gymName, names);
                     }
                 }
@@ -196,7 +211,7 @@ void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym)
 // be a beginner with an 80% chance, then amateur 20% chance, and then pro 5%.
 void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names){
     int roll = rand() % RARITY;
-    int genius = rand() % 10;
+    int genius = rand() % RARITY;
     int wins = 0, losses = 0, draws = 0;
     bool isGenius = false;
     int level = BEGINNER;
