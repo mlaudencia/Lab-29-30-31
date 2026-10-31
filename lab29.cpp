@@ -58,6 +58,7 @@ struct Fighter{
     int win;
     int loss;
     int draw;
+    int consectLosses;
     bool isInjured;
     bool isGenius;
 };
@@ -70,6 +71,7 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , co
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
 void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l);
 void simulateMatch(Fighter& f, const string& gym);
+void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int l);
 
 int main(){
 
@@ -414,30 +416,48 @@ void simulateMatch(Fighter& f, const string& gym){
     // winning. These are around a 4-6/10 chance to win, 1-3/10 chance to draw,
     // and 1-4/10 chance to lose.
     if(gym == "DoronDestroyers"){
-        if(roll < winChanceDoron)
+        if(roll < winChanceDoron){
             f.win++;
-        else if(roll < drawChanceDoron)
+            f.consectLosses = 0;
+        }
+        else if(roll < drawChanceDoron){
             f.draw++;
-        else
+            f.consectLosses = 0;
+        }
+        else{
             f.loss++;
+            f.consectLosses += 1;
+        }
     }
     
     else if(gym == "PotProtectors"){
-        if(roll < winChancePot)
+        if(roll < winChancePot){
             f.win++;
-        else if(roll < drawChancePot)
+            f.consectLosses = 0;
+        }
+        else if(roll < drawChancePot){
             f.draw++;
-        else
+            f.consectLosses = 0;
+        }
+        else{
             f.loss++;
+            f.consectLosses += 1;
+        }
     }
 
     else{
-        if(roll < winChanceIsaac)
+        if(roll < winChanceIsaac){
             f.win++;
-        else if(roll < drawChanceIsaac)
+            f.consectLosses = 0;
+        }
+        else if(roll < drawChanceIsaac){
             f.draw++;
-        else
+            f.consectLosses = 0;
+        }
+        else{
             f.loss++;
+            f.consectLosses += 1;
+        }
     }
 }
 
@@ -463,4 +483,8 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
             }
         }
     }
+}
+
+void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int l){
+    
 }
