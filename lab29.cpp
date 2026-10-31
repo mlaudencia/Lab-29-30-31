@@ -41,13 +41,13 @@ const int proDraws = 10;
 const int injChanceDoron = 30;
 const int injChancePot = 10;
 const int injChanceIsaac = 15;
-const int geniusBonus = 20;
+const int geniusBonus = 30;
 const int winChanceDoron = 60;
 const int drawChanceDoron = 70;
 const int winChancePot = 45;
 const int drawChancePot = 65;
 const int winChanceIsaac = 40;
-const int drawChanceIsaac = 70;
+const int drawChanceIsaac = 65;
 const int recChance = 5;
 const int geniusChanceIsaac = 20;
 const int geniusChance = 5;
@@ -92,7 +92,7 @@ int main(){
     string fighterName;
     bool isInjured, isGenius;
     while (fin >> gymName >> level >> fighterName >> wins >> losses >> draws >> isInjured >> isGenius){
-        Fighter newFighter{fighterName, level, wins, losses, draws, isInjured, isGenius};
+        Fighter newFighter{fighterName, level, wins, losses, draws, 0, isInjured, isGenius};
         gymMap[gymName][level].push_back(newFighter);
     }
     fin.close();
@@ -274,7 +274,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
         draws = rand() % proDraws;
         // same thing but from 0-10 for draws
     }
-    Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
+    Fighter newFighter{name, level, wins, losses, draws, 0, false, isGenius};
     gyms[gym][level].push_back(newFighter);
     if(newFighter.isGenius){
             cout << "* ";
@@ -522,7 +522,7 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
         }
         else if(gym == "PotProtectors"){
             if(switchChance == 0){
-                gyms["DoronDetroyers"][l].push_back(transfer);
+                gyms["DoronDestroyers"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the DoronDestroyers gym after " << lossLimit;
                 cout << " losses in a row.\n";
@@ -536,7 +536,7 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
         }
         else {
             if(switchChance == 0){
-                gyms["DoronDetroyers"][l].push_back(transfer);
+                gyms["DoronDestroyers"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the DoronDestroyers gym after " << lossLimit;
                 cout << " losses in a row.\n";

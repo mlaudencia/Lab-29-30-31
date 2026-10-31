@@ -1,3 +1,3 @@
 DoronDestroyers 2 Doron 29 7 0 0 0
 PotProtectors 2 Pot 37 13 4 0 0
-IsaacMovement 2 Isaac 24 3 2 0 0
+IsaacMovement 2 Isaac 24 3 2 0 1

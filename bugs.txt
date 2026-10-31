@@ -19,9 +19,24 @@
    fix was just changing it so that not all experience levels are went through.
    I do worry, though, if there might be a bug if there are multiple of the
    same name in one experience level.
-5. 
-6. 
-7. 
+5. After each time interval, the DoronDestroyers gym was getting printed out 
+   twice with two different gym rosters. The problem was that I misspelled the
+   DoronDestroyers gym as DoronDetroyers, which made the program treat them as
+   two different gyms. The fix was just changing that spelling error.
+6. Since I wasn't seeing any geniuses around, I decided to try and make the 
+   coaches geniuses. In my fighter_info.txt, I changed it so that Doron, Pot,
+   and Isaac all had their isGenius to true, but when I tried running the
+   program, it showed them all as injured. The problem was that I added a new
+   argument into the Fighter struct for consecutive losses, and my original
+   creation of the coaches didn't account for that, so the values for the true
+   or false of the isGenius and isInjured got shifted to the left, and isGenius
+   got defaulted to false. The fix was changing the reading in of the data so
+   that consecutive losses is defaulted to 0 for each coach.
+7. Alongside the above, there weren't any geniuses being shown in the console,
+   and with the most recent bug, I looked to addFighter() and saw that a 
+   similar situation was going on, and that the creation of new fighters wasn't 
+   account for the consectLosses in a fighter. The fix was just adding a 0 to
+   make consectLosses of each fighter as 0.
 8. 
 9. 
 10. 
