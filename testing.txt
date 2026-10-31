@@ -19,4 +19,5 @@
    release.
 9. Add a function for fighters to switch gyms.
 10. Check to make sure that some injured fighters are retiring because of
-    their injury.
+    their injury. Change the injury chance to become more often, and then
+    see if the "due to injury" retirement prints out.
