@@ -49,6 +49,8 @@ const int drawChancePot = 65;
 const int winChanceIsaac = 40;
 const int drawChanceIsaac = 70;
 const int recChance = 5;
+const int geniusChanceIsaac = 20;
+const int geniusChance = 5;
 
 struct Fighter{
     string name;
@@ -233,12 +235,20 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
     bool isGenius = false;
     int level = BEGINNER;
     string name = names[rand() % names.size()];
+    if(gym == "IsaacMovement"){
+        if(genius - geniusChanceIsaac < 0){
+            genius = 0;
+        }
+        else{
+            genius -= geniusChanceIsaac;
+        }
+    }
     if(roll < proChance){
         level = PRO;
     } else if(roll < amatChance){
         level = AMATEUR;
     }
-    if(genius == 0){
+    if(genius < geniusChance){
         isGenius = true;
         // If a fighter is a genius, they have increased chances for wins and
         // losses in matches.
@@ -306,14 +316,21 @@ void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms){
     }
 }
 
+// promoteFighter() promotes a fighter to the next experience level if they 
+// aren't a pro.
+// arguments: array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, int l
+// returns: nothing
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, int l){
     if(l < ARRAY_SIZE - 1){
         exp[l].remove_if([&f](const Fighter& fighter){
             return fighter.name == f.name;
         });
+        // The above removes a fighter from their old experience level
         Fighter pf = f;
         pf.level += 1;
         exp[l + 1].push_back(pf);
+        // The above makes a copy of said fighter, and just increase their
+        // experience level by 1, and puts the fighter at that level.
         if(f.isGenius){
             cout << " * ";
         }
@@ -326,6 +343,10 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
     }
 }
 
+// injureFighter() injures a fighter and makes them unable to compete depending
+// on the gym they are from.
+// arguments: array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym
+// returns: nothing
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym){
     int roll = rand() % RARITY;
     bool yes = false;
@@ -342,6 +363,18 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
             yes = true;
         }
     }
+    // All the if statements above just determine whether or not a fighter
+    // gets injured or not. My intent was for DoronDestroyers to have a higher
+    // win chance in exchange for higher injury chance, since they spar so
+    // hard. PotProtectors are more safe and have a lower win chance, but 
+    // a much lower chance for injury. IsaacMovement has the lowest win chance
+    // but they make up for it for their high rate of geniuses, which increases
+    // a fighter's win chance by a large amount.
+
+    // The below just makes sure that the injury status of a fighter is changed
+    // to true. After a fighter gets injured, they have a 1/5 chance to recover
+    // every time interval. While they are injured, they cannot have any
+    // matches or get promoted.
     if(yes){
         for(int i = 0; i < ARRAY_SIZE; i++){
             auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
