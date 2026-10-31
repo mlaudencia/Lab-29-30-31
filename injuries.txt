@@ -1,0 +1,33 @@
+concussion
+fractured nose
+swollen eye
+torn meniscus
+bruised rib
+sprained wrist
+broken wrist
+broken heart
+lacerated eyebrow
+lacerated unibrow
+separated shoulder
+strained hamstring
+broken jaw
+broken hand
+broken finger
+broken toe
+broken ankle
+broken nail
+broken arm
+broken leg
+bug bite
+sprained ankle
+hyperextended elbow
+rib cartilage tear
+facial laceration
+dislocated shoulder
+dislocated knee
+dislocated finger
+dislocated toe
+torn ACL
+torn PCL
+torn Achilles
+torn rotator cuff

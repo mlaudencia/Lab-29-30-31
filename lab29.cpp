@@ -17,6 +17,7 @@
 using namespace std;
 
 const int ARRAY_SIZE = 3;
+const int SZ_INJURIES = 33;
 const int numIntervals = 20;
 const int SZ_NAMES = 200;
 const int RARITY = 100;
@@ -66,12 +67,12 @@ struct Fighter{
     bool isGenius;
 };
 
-void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, const vector<string>& injuries, int t);
 void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym);
 void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
 void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
-void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, const vector<string>& injuries);
 void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l);
 void simulateMatch(Fighter& f, const string& gym);
 void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l);
@@ -112,7 +113,20 @@ int main(){
     }
     fin1.close();
 
-    simulateGyms(gymMap, names, numIntervals);
+    ifstream fin2("injuries.txt");
+    if(!fin2){
+        cout << "Could not open external file, check if name is correct " <<
+        " then restart the program." << endl;
+        return 1;
+    }
+    vector<string> injuries;
+    string tempInjury;
+    while (getline(fin2, tempInjury)){
+        injuries.push_back(tempInjury);
+    }
+    fin1.close();
+
+    simulateGyms(gymMap, names, injuries, numIntervals);
 }
 
 // simulateGyms() simulates random events over a time period, t
@@ -123,7 +137,7 @@ int main(){
 // video game RNG, so I enjoyed it. Right now, I only have retireFighter() and
 // addFighter(), but there will come more events like levelUpFighter(), 
 // fighterBreak() for injuries, and then fighterSwitchGym().
-void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t){
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, const vector<string>& injuries, int t){
     for(int i = 0; i < t; i++){
         cout << "======= TIME INTERVAL " << i+1 << " =======\n";
         displayGyms(gyms);
@@ -178,7 +192,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     retireFighter(fighters, fighter, gymName);
                 }
                 for(const Fighter& fighter: injure){
-                    injureFighter(experience, fighter, gymName);
+                    injureFighter(experience, fighter, gymName, injuries);
                 }
             }
             if(rand() % joinChance == 0){ // This is a 1/3 chance for a fighter to
@@ -356,8 +370,9 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
 // on the gym they are from.
 // arguments: array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym
 // returns: nothing
-void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym){
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, const vector<string>& injuries){
     int roll = rand() % RARITY;
+    string injury = injuries[rand() % SZ_INJURIES];
     bool yes = false;
     if(gym == "DoronDestroyers"){
         if(roll < injChanceDoron){
@@ -395,7 +410,7 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
                 if(f.isGenius){
                     cout << "* ";
                 }
-                cout << it->name << " has been injured at " << gym << " gym!\n";
+                cout << it->name << " has been injured at " << gym << " gym with a " << injury << "!\n";
             }
         }
     }

@@ -37,6 +37,12 @@
    similar situation was going on, and that the creation of new fighters wasn't 
    account for the consectLosses in a fighter. The fix was just adding a 0 to
    make consectLosses of each fighter as 0.
-8. 
-9. 
+8. While making my new injuries list and trying to get it into the functions,
+   there was an error because I didn't change the prototype when I changed the
+   injureFighter() function. The fix was just making sure that the parameters
+   of the two matched.
+9. While I was copy-pasting the ifstream code for names, I accidentally left in
+   the int i = 0 for it when I was changing it to injuries.txt, and an error
+   got returned since I was initalizin i twice. The fix was just getting rid of
+   that line, since I didn't actually need it.
 10. 
