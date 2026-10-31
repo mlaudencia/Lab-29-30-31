@@ -17,13 +17,14 @@
 using namespace std;
 
 const int ARRAY_SIZE = 3;
+const int SZ_INJURIES = 33;
 const int numIntervals = 20;
 const int SZ_NAMES = 200;
 const int RARITY = 100;
 const int BEGINNER = 0;
 const int AMATEUR = 1;
 const int PRO = 2;
-const int maxMatches = 6;
+const int maxMatches = 4;
 const int injRetChance = 12;
 const int retChance = 20;
 const int beginPromoteChance = 25;
@@ -41,16 +42,19 @@ const int proDraws = 10;
 const int injChanceDoron = 30;
 const int injChancePot = 10;
 const int injChanceIsaac = 15;
-const int geniusBonus = 20;
+const int geniusBonus = 30;
 const int winChanceDoron = 60;
 const int drawChanceDoron = 70;
 const int winChancePot = 45;
 const int drawChancePot = 65;
 const int winChanceIsaac = 40;
-const int drawChanceIsaac = 70;
+const int drawChanceIsaac = 65;
 const int recChance = 5;
 const int geniusChanceIsaac = 20;
 const int geniusChance = 5;
+const int otherGyms = 2;
+const int lossLimit = 3;
+const int beginFightLimit = 15;
 
 struct Fighter{
     string name;
@@ -58,18 +62,20 @@ struct Fighter{
     int win;
     int loss;
     int draw;
+    int consectLosses;
     bool isInjured;
     bool isGenius;
 };
 
-void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t);
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, const vector<string>& injuries, int t);
 void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym);
 void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const string& gym, const vector<string>& names);
 void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms);
 void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , const string& gym, int l);
-void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, const vector<string>& injuries);
 void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l);
 void simulateMatch(Fighter& f, const string& gym);
+void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l);
 
 int main(){
 
@@ -88,7 +94,7 @@ int main(){
     string fighterName;
     bool isInjured, isGenius;
     while (fin >> gymName >> level >> fighterName >> wins >> losses >> draws >> isInjured >> isGenius){
-        Fighter newFighter{fighterName, level, wins, losses, draws, isInjured, isGenius};
+        Fighter newFighter{fighterName, level, wins, losses, draws, 0, isInjured, isGenius};
         gymMap[gymName][level].push_back(newFighter);
     }
     fin.close();
@@ -107,7 +113,20 @@ int main(){
     }
     fin1.close();
 
-    simulateGyms(gymMap, names, numIntervals);
+    ifstream fin2("injuries.txt");
+    if(!fin2){
+        cout << "Could not open external file, check if name is correct " <<
+        " then restart the program." << endl;
+        return 1;
+    }
+    vector<string> injuries;
+    string tempInjury;
+    while (getline(fin2, tempInjury)){
+        injuries.push_back(tempInjury);
+    }
+    fin1.close();
+
+    simulateGyms(gymMap, names, injuries, numIntervals);
 }
 
 // simulateGyms() simulates random events over a time period, t
@@ -118,7 +137,7 @@ int main(){
 // video game RNG, so I enjoyed it. Right now, I only have retireFighter() and
 // addFighter(), but there will come more events like levelUpFighter(), 
 // fighterBreak() for injuries, and then fighterSwitchGym().
-void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int t){
+void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, const vector<string>& injuries, int t){
     for(int i = 0; i < t; i++){
         cout << "======= TIME INTERVAL " << i+1 << " =======\n";
         displayGyms(gyms);
@@ -134,6 +153,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                 vector<Fighter> retire;
                 vector<Fighter> injure;
                 for(Fighter& fighter: fighters){
+                    int totalFights = fighter.win + fighter.loss + fighter.draw;
                     if(fighter.isInjured){
                         if(rand() % injRetChance == 0){
                             retire.push_back(fighter);
@@ -149,7 +169,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                         // Here's a 1/20 chance for a fighter to retire.
                         retire.push_back(fighter);
                     }
-                    else if(l == 0 && rand() % beginPromoteChance == 0){
+                    else if(l == 0 && (rand() % beginPromoteChance == 0 || totalFights >= beginFightLimit)){
                         // Here's a 1/25 chance to promote from beginner to
                         // amateur
                         promote.push_back(fighter);
@@ -161,6 +181,9 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     else if(rand() % injChance == 0){
                         injure.push_back(fighter);
                     }
+                    else if(fighter.consectLosses == lossLimit){
+                        switchGymFighter(gyms, fighter, gymName, l);
+                    }
                 }
                 for(const Fighter& fighter: promote){
                     promoteFighter(experience, fighter, gymName, l);
@@ -169,7 +192,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     retireFighter(fighters, fighter, gymName);
                 }
                 for(const Fighter& fighter: injure){
-                    injureFighter(experience, fighter, gymName);
+                    injureFighter(experience, fighter, gymName, injuries);
                 }
             }
             if(rand() % joinChance == 0){ // This is a 1/3 chance for a fighter to
@@ -267,7 +290,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
         draws = rand() % proDraws;
         // same thing but from 0-10 for draws
     }
-    Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
+    Fighter newFighter{name, level, wins, losses, draws, 0, false, isGenius};
     gyms[gym][level].push_back(newFighter);
     if(newFighter.isGenius){
             cout << "* ";
@@ -347,8 +370,9 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
 // on the gym they are from.
 // arguments: array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym
 // returns: nothing
-void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym){
+void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym, const vector<string>& injuries){
     int roll = rand() % RARITY;
+    string injury = injuries[rand() % SZ_INJURIES];
     bool yes = false;
     if(gym == "DoronDestroyers"){
         if(roll < injChanceDoron){
@@ -386,7 +410,7 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
                 if(f.isGenius){
                     cout << "* ";
                 }
-                cout << it->name << " has been injured at " << gym << " gym!\n";
+                cout << it->name << " has been injured at " << gym << " gym with a " << injury << "!\n";
             }
         }
     }
@@ -414,30 +438,48 @@ void simulateMatch(Fighter& f, const string& gym){
     // winning. These are around a 4-6/10 chance to win, 1-3/10 chance to draw,
     // and 1-4/10 chance to lose.
     if(gym == "DoronDestroyers"){
-        if(roll < winChanceDoron)
+        if(roll < winChanceDoron){
             f.win++;
-        else if(roll < drawChanceDoron)
+            f.consectLosses = 0;
+        }
+        else if(roll < drawChanceDoron){
             f.draw++;
-        else
+            f.consectLosses = 0;
+        }
+        else{
             f.loss++;
+            f.consectLosses += 1;
+        }
     }
     
     else if(gym == "PotProtectors"){
-        if(roll < winChancePot)
+        if(roll < winChancePot){
             f.win++;
-        else if(roll < drawChancePot)
+            f.consectLosses = 0;
+        }
+        else if(roll < drawChancePot){
             f.draw++;
-        else
+            f.consectLosses = 0;
+        }
+        else{
             f.loss++;
+            f.consectLosses += 1;
+        }
     }
 
     else{
-        if(roll < winChanceIsaac)
+        if(roll < winChanceIsaac){
             f.win++;
-        else if(roll < drawChanceIsaac)
+            f.consectLosses = 0;
+        }
+        else if(roll < drawChanceIsaac){
             f.draw++;
-        else
+            f.consectLosses = 0;
+        }
+        else{
             f.loss++;
+            f.consectLosses += 1;
+        }
     }
 }
 
@@ -449,17 +491,82 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
     // The below basically changes a fighter's injury status dependin on if
     // they got the recovery chance or not.
     if(rand() % recChance == 0){
-        for(int i = 0; i < ARRAY_SIZE; i++){
-            auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
+            auto it = find_if(exp[l].begin(), exp[l].end(), [&f](const Fighter& fighter){
                 return fighter.name == f.name;
             });
 
-            if(it != exp[i].end()){
+            if(it != exp[l].end()){
                 it->isInjured = false;
                 if(f.isGenius){
                     cout << "* ";
                 }
                 cout << it->name << " has recovered from injury at " << gym << " gym!\n";
+            }
+        }
+    }
+
+
+// switchGymFighter() switches the gym of a fighter to another gym.
+// arguments: map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l
+// returns: nothing
+void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l){
+    auto it = find_if(gyms[gym][l].begin(), gyms[gym][l].end(), [&f](const Fighter& fighter){
+        // This goes through the gyms list, then the gym the fighter goes to,
+        // then finds them in their experience level. If they are found, they
+        // are returned. If not, this won't do anything, as seen below.
+        return fighter.name == f.name;
+    });
+    if(it != gyms[gym][l].end()){
+        Fighter transfer = *it;
+        // The above just copies the pointer of the fighter and deferences it
+        // so that Fighter transfer is the copy of the fighter switching gyms.
+        gyms[gym][l].erase(it);
+        // Even though the fighter still has however many consecutive losses,
+        // we still set the count to 0 for them to have a fresh start at their
+        // new gym.
+        transfer.consectLosses = 0;
+        int switchChance = rand() % otherGyms;
+        // The below is just a 50/50 other gym chance for the fighter to go to.
+        if(gym == "DoronDestroyers"){
+            if(switchChance == 0){
+                gyms["PotProtectors"][l].push_back(transfer);
+                cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the PotProtectors gym after " << lossLimit;
+                cout << " losses in a row.\n";
+            }
+            else{
+                gyms["IsaacMovement"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the IsaacMovement gym after " << lossLimit;
+                cout << " losses in a row.\n";
+            }
+        }
+        else if(gym == "PotProtectors"){
+            if(switchChance == 0){
+                gyms["DoronDestroyers"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the DoronDestroyers gym after " << lossLimit;
+                cout << " losses in a row.\n";
+            }
+            else{
+                gyms["IsaacMovement"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the IsaacMovement gym after " << lossLimit;
+                cout << " losses in a row.\n";
+            }
+        }
+        else {
+            if(switchChance == 0){
+                gyms["DoronDestroyers"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the DoronDestroyers gym after " << lossLimit;
+                cout << " losses in a row.\n";
+            }
+            else{
+                gyms["PotProtectors"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the PotProtectors gym after " << lossLimit;
+                cout << " losses in a row.\n";
             }
         }
     }

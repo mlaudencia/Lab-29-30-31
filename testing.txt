@@ -20,3 +20,14 @@
 9. Add a function for fighters to switch gyms.
 10. Check to make sure that some injured fighters are retiring because of
     their injury.
+11. Possible idea: have each fighter have their own stats for strength, speed,
+    defense, IQ, etc., and have them fight other fighters in different gyms or
+    even fighters in the same gym. Then, calculate who wins depending on their
+    stats and their gym's win chances. This could happen, but because of how
+    many fights there would be, it should be limited to only a couple of cross
+    gym fighters per time interval.
+12. Possbile idea: For pros, add a chance for them to become champion in a
+    fighting organization. Could probably add a new external file for random
+    made up fighting organizations, so that they can become champions in MMA,
+    Muay Thai, boxing, jiu jitsu, wrestling, etc. There could also be amateur
+    champions and olympic champions with a super low chance of it happening.
