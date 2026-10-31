@@ -474,12 +474,11 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
     // The below basically changes a fighter's injury status dependin on if
     // they got the recovery chance or not.
     if(rand() % recChance == 0){
-        for(int i = 0; i < ARRAY_SIZE; i++){
-            auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
+            auto it = find_if(exp[l].begin(), exp[l].end(), [&f](const Fighter& fighter){
                 return fighter.name == f.name;
             });
 
-            if(it != exp[i].end()){
+            if(it != exp[l].end()){
                 it->isInjured = false;
                 if(f.isGenius){
                     cout << "* ";
@@ -488,7 +487,6 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
             }
         }
     }
-}
 
 void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l){
     auto it = find_if(gyms[gym][l].begin(), gyms[gym][l].end(), [&f](const Fighter& fighter){
@@ -513,13 +511,13 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
                 gyms["PotProtectors"][l].push_back(transfer);
                 cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the PotProtectors gym after " << lossLimit;
-                cout << " losses in a row.";
+                cout << " losses in a row.\n";
             }
             else{
                 gyms["IsaacMovement"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the IsaacMovement gym after " << lossLimit;
-                cout << " losses in a row.";
+                cout << " losses in a row.\n";
             }
         }
         else if(gym == "PotProtectors"){
@@ -527,13 +525,13 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
                 gyms["DoronDetroyers"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the DoronDestroyers gym after " << lossLimit;
-                cout << " losses in a row.";
+                cout << " losses in a row.\n";
             }
             else{
                 gyms["IsaacMovement"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the IsaacMovement gym after " << lossLimit;
-                cout << " losses in a row.";
+                cout << " losses in a row.\n";
             }
         }
         else {
@@ -541,13 +539,13 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
                 gyms["DoronDetroyers"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the DoronDestroyers gym after " << lossLimit;
-                cout << " losses in a row.";
+                cout << " losses in a row.\n";
             }
             else{
                 gyms["PotProtectors"][l].push_back(transfer);
                  cout << transfer.name << " has switched from the " << gym;
                 cout << " gym to the PotProtectors gym after " << lossLimit;
-                cout << " losses in a row.";
+                cout << " losses in a row.\n";
             }
         }
     }
