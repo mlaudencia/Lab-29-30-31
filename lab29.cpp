@@ -392,8 +392,15 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
     }
 }
 
+// simulateMatch() takes a fighter and gym and puts them through a match. 
+// Their win, loss, and draw chances change depending on the gym they go to.
+// arguments : Fighter& f, const string& gym
+// returns: nothing
 void simulateMatch(Fighter& f, const string& gym){
     int roll = rand() % RARITY;
+    // The below checks if a fighter is a genius, and if they are, they get a
+    // bonus percentage to their initial roll, allowing them to have the chance
+    // at more wins.
     if(f.isGenius){
         if(roll - geniusBonus < 0){
             roll = 0;
@@ -403,6 +410,9 @@ void simulateMatch(Fighter& f, const string& gym){
         }
     }
 
+    // The below just goes over each gym and their respective chances at
+    // winning. These are around a 4-6/10 chance to win, 1-3/10 chance to draw,
+    // and 1-4/10 chance to lose.
     if(gym == "DoronDestroyers"){
         if(roll < winChanceDoron)
             f.win++;
@@ -431,7 +441,13 @@ void simulateMatch(Fighter& f, const string& gym){
     }
 }
 
+// recoverFighter() gives an injured fighter the chance to recover from injury.
+// When recovered, they are able to get back into matches and promotions.
+// arguments: array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l
+// returns: nothing
 void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l){
+    // The below basically changes a fighter's injury status dependin on if
+    // they got the recovery chance or not.
     if(rand() % recChance == 0){
         for(int i = 0; i < ARRAY_SIZE; i++){
             auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
