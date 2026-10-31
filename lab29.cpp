@@ -485,6 +485,16 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
     }
 }
 
-void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int l){
-    
+void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l){
+    auto it = find_if(gyms[gym][l].begin(), gyms[gym][l].end(), [&f](const Fighter& fighter){
+        // This goes through the gyms list, then the gym the fighter goes to,
+        // then finds them in their experience level. If they are found, they
+        // are returned. If not, this won't do anything, as seen below.
+        return fighter.name == f.name;
+    });
+    if(it != gyms[gym][l].end()){
+        Fighter transfer = *it;
+        // The above just copies the pointer of the fighter and deferences it
+        // so that Fighter transfer is the copy of the fighter switching gyms.
+    }
 }
