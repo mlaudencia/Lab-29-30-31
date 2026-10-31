@@ -23,7 +23,7 @@ const int RARITY = 100;
 const int BEGINNER = 0;
 const int AMATEUR = 1;
 const int PRO = 2;
-const int maxMatches = 6;
+const int maxMatches = 4;
 const int injRetChance = 12;
 const int retChance = 20;
 const int beginPromoteChance = 25;
@@ -53,6 +53,7 @@ const int geniusChanceIsaac = 20;
 const int geniusChance = 5;
 const int otherGyms = 2;
 const int lossLimit = 3;
+const int beginFightLimit = 15;
 
 struct Fighter{
     string name;
@@ -138,6 +139,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                 vector<Fighter> retire;
                 vector<Fighter> injure;
                 for(Fighter& fighter: fighters){
+                    int totalFights = fighter.win + fighter.loss + fighter.draw;
                     if(fighter.isInjured){
                         if(rand() % injRetChance == 0){
                             retire.push_back(fighter);
@@ -153,7 +155,7 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                         // Here's a 1/20 chance for a fighter to retire.
                         retire.push_back(fighter);
                     }
-                    else if(l == 0 && rand() % beginPromoteChance == 0){
+                    else if(l == 0 && (rand() % beginPromoteChance == 0 || totalFights >= beginFightLimit)){
                         // Here's a 1/25 chance to promote from beginner to
                         // amateur
                         promote.push_back(fighter);
