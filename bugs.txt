@@ -1,0 +1,18 @@
+1. In switchGymFighter(), I made an integer named int switch and set it to
+   rand() % otherGyms, where otherGyms was 2. The word switch had an error
+   that said "expected an identifier", so I searched up and learned that I
+   can't name a variable switch since there's already something in C++ that
+   is called switch and has that named reserved. The fix was just changing the
+   name to switchChance.
+2. The parameters in the switchGymFighter() prototype versus the actual
+   function were different, which returned an error. The fix was just making
+   sure they were both the same, since I copy-pasted the format of the prototype
+   from another function.
+3. 
+4. 
+5. 
+6. 
+7. 
+8. 
+9. 
+10. 

@@ -52,6 +52,7 @@ const int recChance = 5;
 const int geniusChanceIsaac = 20;
 const int geniusChance = 5;
 const int otherGyms = 2;
+const int lossLimit = 3;
 
 struct Fighter{
     string name;
@@ -72,7 +73,7 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f , co
 void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, const string& gym);
 void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l);
 void simulateMatch(Fighter& f, const string& gym);
-void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vector<string>& names, int l);
+void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l);
 
 int main(){
 
@@ -163,6 +164,9 @@ void simulateGyms(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const vec
                     }
                     else if(rand() % injChance == 0){
                         injure.push_back(fighter);
+                    }
+                    else if(fighter.consectLosses == lossLimit){
+                        switchGymFighter(gyms, fighter, gymName, l);
                     }
                 }
                 for(const Fighter& fighter: promote){
@@ -498,14 +502,52 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
         // The above just copies the pointer of the fighter and deferences it
         // so that Fighter transfer is the copy of the fighter switching gyms.
         gyms[gym][l].erase(it);
+        // Even though the fighter still has however many consecutive losses,
+        // we still set the count to 0 for them to have a fresh start at their
+        // new gym.
+        transfer.consectLosses = 0;
         int switchChance = rand() % otherGyms;
         // The below is just a 50/50 other gym chance for the fighter to go to.
         if(gym == "DoronDestroyers"){
             if(switchChance == 0){
                 gyms["PotProtectors"][l].push_back(transfer);
+                cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the PotProtectors gym after " << lossLimit;
+                cout << " losses in a row.";
             }
             else{
                 gyms["IsaacMovement"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the IsaacMovement gym after " << lossLimit;
+                cout << " losses in a row.";
+            }
+        }
+        else if(gym == "PotProtectors"){
+            if(switchChance == 0){
+                gyms["DoronDetroyers"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the DoronDestroyers gym after " << lossLimit;
+                cout << " losses in a row.";
+            }
+            else{
+                gyms["IsaacMovement"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the IsaacMovement gym after " << lossLimit;
+                cout << " losses in a row.";
+            }
+        }
+        else {
+            if(switchChance == 0){
+                gyms["DoronDetroyers"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the DoronDestroyers gym after " << lossLimit;
+                cout << " losses in a row.";
+            }
+            else{
+                gyms["PotProtectors"][l].push_back(transfer);
+                 cout << transfer.name << " has switched from the " << gym;
+                cout << " gym to the PotProtectors gym after " << lossLimit;
+                cout << " losses in a row.";
             }
         }
     }
