@@ -203,7 +203,7 @@ void retireFighter(list<Fighter>& fighters, const Fighter& f, const string& gym)
         return fighter.name == f.name;
     });
     if(f.isGenius){
-            cout << " * ";
+            cout << "* ";
         }
     if(it != fighters.end()){
         cout << f.name << " has retired from the " << gym << " gym";
@@ -270,7 +270,7 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
     Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
     gyms[gym][level].push_back(newFighter);
     if(newFighter.isGenius){
-            cout << " * ";
+            cout << "* ";
             // Give geniuses a little mark to easily recognize them
         }
     cout << newFighter.name << " has joined the " << gym << " gym as ";
@@ -301,7 +301,7 @@ void displayGyms(const map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms){
                 for(const auto& fighter: experience[i]){
                     cout << "    ";
                     if(fighter.isGenius == true){
-                        cout << " * ";
+                        cout << "* ";
                     }
                     cout << fighter.name << " " << fighter.win << "-";
                     cout << fighter.loss << "-" << fighter.draw << " ";
@@ -332,7 +332,7 @@ void promoteFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, con
         // The above makes a copy of said fighter, and just increase their
         // experience level by 1, and puts the fighter at that level.
         if(f.isGenius){
-            cout << " * ";
+            cout << "* ";
         }
         cout << f.name << ", from the " << gym << " gym, has been promoted to a";
         if(l == 0){
@@ -384,7 +384,7 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
             if(it != exp[i].end()){
                 it->isInjured = true;
                 if(f.isGenius){
-                    cout << " * ";
+                    cout << "* ";
                 }
                 cout << it->name << " has been injured at " << gym << " gym!\n";
             }
@@ -457,7 +457,7 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
             if(it != exp[i].end()){
                 it->isInjured = false;
                 if(f.isGenius){
-                    cout << " * ";
+                    cout << "* ";
                 }
                 cout << it->name << " has recovered from injury at " << gym << " gym!\n";
             }
