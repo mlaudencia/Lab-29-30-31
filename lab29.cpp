@@ -51,6 +51,7 @@ const int drawChanceIsaac = 70;
 const int recChance = 5;
 const int geniusChanceIsaac = 20;
 const int geniusChance = 5;
+const int otherGyms = 2;
 
 struct Fighter{
     string name;
@@ -496,5 +497,16 @@ void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fight
         Fighter transfer = *it;
         // The above just copies the pointer of the fighter and deferences it
         // so that Fighter transfer is the copy of the fighter switching gyms.
+        gyms[gym][l].erase(it);
+        int switchChance = rand() % otherGyms;
+        // The below is just a 50/50 other gym chance for the fighter to go to.
+        if(gym == "DoronDestroyers"){
+            if(switchChance == 0){
+                gyms["PotProtectors"][l].push_back(transfer);
+            }
+            else{
+                gyms["IsaacMovement"][l].push_back(transfer);
+            }
+        }
     }
 }
