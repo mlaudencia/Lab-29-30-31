@@ -45,4 +45,7 @@
    the int i = 0 for it when I was changing it to injuries.txt, and an error
    got returned since I was initalizin i twice. The fix was just getting rid of
    that line, since I didn't actually need it.
-10. 
+10. On top of that, there was an error with simulateGyms(). Like bug #8, I did
+    not change the parameters correctly so that the injuries vector could be 
+    added into it. The change was just making sure that the protoype and
+    function both took in const vector<string>& injuries as a parameter.

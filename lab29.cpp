@@ -505,6 +505,10 @@ void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const str
         }
     }
 
+
+// switchGymFighter() switches the gym of a fighter to another gym.
+// arguments: map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l
+// returns: nothing
 void switchGymFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, Fighter& f, const string& gym, int l){
     auto it = find_if(gyms[gym][l].begin(), gyms[gym][l].end(), [&f](const Fighter& fighter){
         // This goes through the gyms list, then the gym the fighter goes to,
