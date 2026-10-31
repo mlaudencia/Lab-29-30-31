@@ -32,6 +32,23 @@ const int injChance = 15;
 const int joinChance = 3;
 const int joinSecChance = 50;
 const int joinThirdChance = 100;
+const int proChance = 5;
+const int amatChance = 20;
+const int amatRange = 10;
+const int amatDraws = 4;
+const int proRange = 25;
+const int proDraws = 10;
+const int injChanceDoron = 30;
+const int injChancePot = 10;
+const int injChanceIsaac = 15;
+const int geniusBonus = 20;
+const int winChanceDoron = 60;
+const int drawChanceDoron = 70;
+const int winChancePot = 45;
+const int drawChancePot = 65;
+const int winChanceIsaac = 40;
+const int drawChanceIsaac = 70;
+const int recChance = 5;
 
 struct Fighter{
     string name;
@@ -216,28 +233,35 @@ void addFighter(map<string, array<list<Fighter>, ARRAY_SIZE>>& gyms, const strin
     bool isGenius = false;
     int level = BEGINNER;
     string name = names[rand() % names.size()];
-    if(roll < 5){
+    if(roll < proChance){
         level = PRO;
-    } else if(roll < 20){
+    } else if(roll < amatChance){
         level = AMATEUR;
     }
     if(genius == 0){
         isGenius = true;
+        // If a fighter is a genius, they have increased chances for wins and
+        // losses in matches.
     }
     if(level == AMATEUR){
-        wins = rand() % 10;
-        losses = rand() % 10;
-        draws = rand() % 4;
+        wins = rand() % amatRange;
+        losses = rand() % amatRange;
+        // random num from 0-10 for how many wins/losses amateurs start with
+        draws = rand() % amatDraws;
+        // same thing but from 0-4 for draws
     }
     else if(level == PRO){
-        wins = rand() % 25;
-        losses = rand() % 25;
-        draws = rand() % 10;
+        wins = rand() % proRange;
+        losses = rand() % proRange;
+        // random num from 0-25 for how many wins/losses pros start with
+        draws = rand() % proDraws;
+        // same thing but from 0-10 for draws
     }
     Fighter newFighter{name, level, wins, losses, draws, false, isGenius};
     gyms[gym][level].push_back(newFighter);
     if(newFighter.isGenius){
             cout << " * ";
+            // Give geniuses a little mark to easily recognize them
         }
     cout << newFighter.name << " has joined the " << gym << " gym as ";
     if(level == PRO){
@@ -306,15 +330,15 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
     int roll = rand() % RARITY;
     bool yes = false;
     if(gym == "DoronDestroyers"){
-        if(roll < 30){
+        if(roll < injChanceDoron){
             yes = true;
         }
     } else if(gym == "PotProtectors"){
-        if(roll < 10){
+        if(roll < injChancePot){
             yes = true;
         }
     } else{
-        if(roll < 15){
+        if(roll < injChanceIsaac){
             yes = true;
         }
     }
@@ -338,36 +362,36 @@ void injureFighter(array<list<Fighter>, ARRAY_SIZE>& exp, const Fighter& f, cons
 void simulateMatch(Fighter& f, const string& gym){
     int roll = rand() % RARITY;
     if(f.isGenius){
-        if(roll - 20 < 0){
+        if(roll - geniusBonus < 0){
             roll = 0;
         }
         else{
-            roll -= 20;
+            roll -= geniusBonus;
         }
     }
 
     if(gym == "DoronDestroyers"){
-        if(roll < 60)
+        if(roll < winChanceDoron)
             f.win++;
-        else if(roll < 70)
+        else if(roll < drawChanceDoron)
             f.draw++;
         else
             f.loss++;
     }
     
     else if(gym == "PotProtectors"){
-        if(roll < 45)
+        if(roll < winChancePot)
             f.win++;
-        else if(roll < 65)
+        else if(roll < drawChancePot)
             f.draw++;
         else
             f.loss++;
     }
 
     else{
-        if(roll < 40)
+        if(roll < winChanceIsaac)
             f.win++;
-        else if(roll < 70)
+        else if(roll < drawChanceIsaac)
             f.draw++;
         else
             f.loss++;
@@ -375,7 +399,7 @@ void simulateMatch(Fighter& f, const string& gym){
 }
 
 void recoverFighter(array<list<Fighter>, ARRAY_SIZE>& exp, Fighter& f, const string& gym, int l){
-    if(rand() % 5 == 0){
+    if(rand() % recChance == 0){
         for(int i = 0; i < ARRAY_SIZE; i++){
             auto it = find_if(exp[i].begin(), exp[i].end(), [&f](const Fighter& fighter){
                 return fighter.name == f.name;
